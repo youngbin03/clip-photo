@@ -108,9 +108,25 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
     }
   };
   
+  // 다운로드 링크 생성 (모바일 접근용)
+  const getDirectDownloadUrl = (url: string) => {
+    if (!url) return '';
+    // Firebase 스토리지 URL인 경우, 다운로드 파라미터 추가
+    if (url.includes('firebasestorage.googleapis.com')) {
+      // 이미 URL에 토큰이 있는 경우를 처리
+      if (url.includes('?')) {
+        return `${url}&alt=media&downloadToken=download`;
+      } else {
+        return `${url}?alt=media&downloadToken=download`;
+      }
+    }
+    return url;
+  };
+  
   // 실제 표시할 URL 결정 (Firebase 업로드 실패 시 로컬 URL 사용)
   const displayUrl = downloadUrl || localVideoUrl;
   const isLocalUrl = !downloadUrl && !!localVideoUrl;
+  const directDownloadUrl = downloadUrl ? getDirectDownloadUrl(downloadUrl) : '';
   
   return (
     <div className="video-preview-container">
@@ -173,6 +189,24 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             <div className="qrcode-instructions">
               <h4>모바일에서 확인하기</h4>
               <p>QR 코드를 스캔하여 영상을 모바일에서 확인하세요</p>
+              
+              {!isLocalUrl && directDownloadUrl && (
+                <div className="mobile-download-guide">
+                  <p>모바일에서 다운로드하려면:</p>
+                  <ol>
+                    <li>아래 다운로드 링크를 탭하세요</li>
+                    <li>영상이 열리면 길게 누르거나 공유 버튼을 이용해 저장하세요</li>
+                  </ol>
+                  <a 
+                    href={directDownloadUrl} 
+                    className="mobile-download-link"
+                    download={`photobooth_video_${Date.now()}.webm`}
+                  >
+                    직접 다운로드 링크
+                  </a>
+                </div>
+              )}
+              
               {isLocalUrl ? (
                 <p className="local-warning">* 로컬 저장된 영상은 현재 기기에서만 접근 가능합니다</p>
               ) : (

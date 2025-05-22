@@ -117,7 +117,9 @@ export const uploadVideo = async (videoBlob: Blob, frameId: string): Promise<str
           'frameId': frameId,
           'timestamp': timestamp.toString(),
           'uploadedFrom': window.location.origin
-        }
+        },
+        // 다운로드 기능 활성화를 위한 헤더 추가
+        contentDisposition: `attachment; filename="photobooth_video_${timestamp}.webm"`
       };
       logDebug("업로드 메타데이터 설정", metadata);
       
