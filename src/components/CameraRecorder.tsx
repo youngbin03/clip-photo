@@ -626,11 +626,13 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
             // 라치오스 테마는 기본 로고 스타일 사용
             selectedFrame === 'choice-1' || selectedFrame === 'choice-2' || selectedFrame === 'choice-3'
               ? ''
-              : currentTheme?.logoPosition === 'center-top' 
-                ? 'logo-center-top' 
-                : currentTheme?.logoPosition === 'top-edge'
-                  ? 'top-edge'
-                  : ''
+              : selectedFrame === 'choice-5'
+                ? 'logo-full-width'
+                : currentTheme?.logoPosition === 'center-top' 
+                  ? 'logo-center-top' 
+                  : currentTheme?.logoPosition === 'top-edge'
+                    ? 'top-edge'
+                    : ''
           }`}
         />
       )}
