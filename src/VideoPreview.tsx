@@ -59,7 +59,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           console.log('자동 다운로드 시작...');
           const a = document.createElement('a');
           a.href = localVideoUrl;
-          a.download = `photobooth_video_${Date.now()}.webm`;
+          a.download = `photobooth_video_${Date.now()}.mp4`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -122,7 +122,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       // WebM 다운로드
       const a = document.createElement('a');
       a.href = localVideoUrl;
-      a.download = `photobooth_video_${Date.now()}.webm`;
+      a.download = `photobooth_video_${Date.now()}.mp4`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
