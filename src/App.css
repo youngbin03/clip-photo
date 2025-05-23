@@ -34,7 +34,7 @@ body, html {
 
 /* 테마 선택 섹션 */
 .theme-selector-section {
-  height: 100vh;
+  height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
