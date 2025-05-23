@@ -200,11 +200,11 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
         video: {
           // 비표준 속성이지만 많은 브라우저에서 지원됨
           // @ts-ignore - displaySurface는 TypeScript 정의에 없지만 실제로 사용 가능
-          displaySurface: 'browser', // browser로 변경하여 탭 모드 우선 선택
+          displaySurface: 'window', // browser에서 window로 변경하여 창 모드 우선 선택
           // @ts-ignore - cursor는 TypeScript 정의에 없지만 실제로 사용 가능
           cursor: 'always',         // 커서 항상 표시
           // @ts-ignore - preferCurrentTab은 TypeScript 정의에 없지만 Chrome 105+에서 지원됨
-          preferCurrentTab: true,   // 현재 탭을 목록 맨 위에 표시
+          preferCurrentTab: false,   // 현재 탭 우선 선택 비활성화
           width: { ideal: 1920 },   // 이상적인 너비
           height: { ideal: 1080 },  // 이상적인 높이
           frameRate: { ideal: 30, max: 60 } // 프레임 레이트
