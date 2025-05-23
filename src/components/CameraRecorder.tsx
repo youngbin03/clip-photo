@@ -184,7 +184,7 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
     // 5초 후 안내 메시지 제거
     setTimeout(() => {
       document.body.removeChild(guideElement);
-    }, 5000);
+    }, 15000);
   };
   
   // 전체 화면 녹화 시작 함수
