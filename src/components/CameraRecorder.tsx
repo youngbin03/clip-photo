@@ -16,6 +16,10 @@ interface ThemeConfig {
   name: string;
   color: string;
   accentColor: string;
+  isImage?: boolean; // 이미지 프레임인지 여부
+  logoPosition?: 'center-top' | 'default' | 'top-edge'; // 로고 위치
+  borderStyle?: string; // 테두리 스타일
+  fullscreen?: boolean; // 전체화면 녹화 여부
 }
 
 const themeConfigs: Record<FrameTheme, ThemeConfig> = {
@@ -33,6 +37,31 @@ const themeConfigs: Record<FrameTheme, ThemeConfig> = {
     name: '네온',
     color: '#57b2df',
     accentColor: '#57b2df'
+  },
+  'choice-4': {
+    name: '하이리온 클래식',
+    color: '#ffa9f9',
+    accentColor: '#fbead3',
+    isImage: true,
+    logoPosition: 'center-top',
+    borderStyle: '#ffa9f9'
+  },
+  'choice-5': {
+    name: '하이리온 프리미엄',
+    color: '#2f65b0',
+    accentColor: '#2f65b0',
+    isImage: true,
+    logoPosition: 'default',
+    borderStyle: '#2f65b0'
+  },
+  'choice-6': {
+    name: '하이리온 스페셜',
+    color: '#d47991',
+    accentColor: '#d47991',
+    isImage: true,
+    logoPosition: 'top-edge',
+    borderStyle: '#d47991',
+    fullscreen: true
   }
 };
 
@@ -180,7 +209,7 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
           height: { ideal: 1080 },  // 이상적인 높이
           frameRate: { ideal: 30, max: 60 } // 프레임 레이트
         },
-        audio: false // 오디오는 웹캠에서 가져올 것이므로 여기선 false
+        audio: false // 오디오 사용 안함
       });
       
       setDisplayStream(stream);
@@ -512,26 +541,44 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
   
   return (
     <div className="camera-wrapper" ref={containerRef}>
-      {/* 선택된 프레임이 있으면 배경 비디오로 표시 */}
+      {/* 선택된 프레임이 있으면 배경 비디오 또는 이미지로 표시 */}
       {selectedFrame && (
-        <div className="frame-overlay">
-          <video
-            key={`frame-video-${selectedFrame}`} // 키 추가로 프레임 변경 시 재로드
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="frame-video"
-          >
-            <source src={`/assets/frames/${selectedFrame}.mp4`} type="video/mp4" />
-          </video>
+        <div className={`frame-overlay ${currentTheme?.fullscreen ? 'fullscreen-frame' : ''}`}>
+          {currentTheme?.isImage ? (
+            // 하이리온 테마 - 이미지 프레임
+            <img
+              key={`frame-image-${selectedFrame}`}
+              src={`/assets/frames/${selectedFrame}.png`}
+              alt={`${currentTheme.name} 프레임`}
+              className="frame-image"
+            />
+          ) : (
+            // 라치오스 테마 - 비디오 프레임
+            <video
+              key={`frame-video-${selectedFrame}`}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="frame-video"
+            >
+              <source src={`/assets/frames/${selectedFrame}.mp4`} type="video/mp4" />
+            </video>
+          )}
         </div>
       )}
       
-      {/* 웹캠 컨테이너 */}
-      <div className="webcam-container">
+      {/* 웹캠 컨테이너 - 테마별 스타일 적용 */}
+      <div 
+        className="webcam-container"
+        style={{
+          border: currentTheme?.borderStyle 
+            ? `5px solid ${currentTheme.borderStyle}` 
+            : `5px solid rgba(132, 185, 229, 0.8)`
+        }}
+      >
         <Webcam
-          audio={true}
+          audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
@@ -546,7 +593,7 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
             <div className="play-button">
               <div 
                 className="play-button-triangle" 
-                style={{ '--button-color': '#57b2df' } as React.CSSProperties}
+                style={{ '--button-color': currentTheme?.color || '#57b2df' } as React.CSSProperties}
               ></div>
             </div>
           </div>
@@ -557,7 +604,7 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
           <CountdownTimer 
             countdown={countdown} 
             isVisible={countdown > 0} 
-            themeColor={themeColor}
+            themeColor={currentTheme?.color || themeColor}
           />
         </div>
         
@@ -569,13 +616,49 @@ const CameraRecorder: React.FC<CameraRecorderProps> = ({ selectedFrame }) => {
         )}
       </div>
       
-      {/* 선택된 프레임에 따라 로고 표시 - 웹캠 밖으로 완전히 표시 */}
+      {/* 선택된 프레임에 따라 로고 표시 */}
       {selectedFrame && (
         <img 
-          key={`logo-${selectedFrame}`} // 키 추가로 로고 변경 시 재로드
+          key={`logo-${selectedFrame}`}
           src={`/assets/logo/${selectedFrame}.png`} 
           alt={`${currentTheme?.name} 로고`} 
-          className="webcam-logo"
+          className={`webcam-logo ${
+            // 라치오스 테마는 기본 로고 스타일 사용
+            selectedFrame === 'choice-1' || selectedFrame === 'choice-2' || selectedFrame === 'choice-3'
+              ? ''
+              : currentTheme?.logoPosition === 'center-top' 
+                ? 'logo-center-top' 
+                : currentTheme?.logoPosition === 'top-edge'
+                  ? 'top-edge'
+                  : ''
+          }`}
+        />
+      )}
+      
+      {/* 하이리온 choice-4 테마일 경우 오른쪽 하단에 GIF 추가 */}
+      {selectedFrame === 'choice-4' && (
+        <img
+          src="/assets/hyulion/choice-4.gif"
+          alt="하이리온 클래식 애니메이션"
+          className="hyulion-animation"
+        />
+      )}
+      
+      {/* 하이리온 choice-5 테마일 경우 오른쪽 하단에 GIF 추가 */}
+      {selectedFrame === 'choice-5' && (
+        <img
+          src="/assets/hyulion/choice-5.gif"
+          alt="하이리온 애니메이션"
+          className="hyulion-animation"
+        />
+      )}
+      
+      {/* 하이리온 choice-6 테마일 경우 왼쪽 하단에 GIF 추가 */}
+      {selectedFrame === 'choice-6' && (
+        <img
+          src="/assets/hyulion/choice-6.gif"
+          alt="하이리온 스페셜 애니메이션"
+          className="hyulion-animation left-bottom"
         />
       )}
     </div>

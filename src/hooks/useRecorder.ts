@@ -20,7 +20,7 @@ interface UseRecorderReturn {
 // 녹화 시간 (초)
 const RECORDING_DURATION = 15;
 // 카운트다운 시간 (초)
-const COUNTDOWN_DURATION = 3;
+const COUNTDOWN_DURATION = 5;
 // 디버깅 활성화
 const DEBUG = true;
 

@@ -38,10 +38,6 @@ function App() {
       {/* 테마 선택 영역 - 스크롤 시 보임 */}
       <div className="theme-selector-section">
         <div className="theme-selector-container">
-          <h2 className="theme-selector-title">프레임 선택</h2>
-          <p className="theme-selector-description">
-            아래 테마 중 마음에 드는 것을 선택하고 촬영을 시작하세요. 각 테마는 독특한 분위기를 연출합니다.
-          </p>
           <FrameSelector 
             selectedFrame={selectedFrame} 
             onSelectFrame={handleSelectFrame} 
